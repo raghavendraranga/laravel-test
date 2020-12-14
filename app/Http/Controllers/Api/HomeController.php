@@ -61,6 +61,19 @@ class HomeController extends Controller
             //Display File Name
             $fileName = rand()."_".uniqid()."_".$file->getClientOriginalName();
             //Move Uploaded File
+            $s3 = new \Aws\S3\S3Client([
+                'region'  => 'ap-south-1',//Region Location
+                'version' => 'latest',
+                'credentials' => [
+                    'key'    => "--AwsKey--",
+                    'secret' => "--AWS Secret Key--",
+                ]
+            ]);
+            $result = $s3->putObject([
+                'Bucket' => '--AWSBucketName--',
+                'Key'    => $fileName,
+                'SourceFile' => $_FILES['upload_doc']['tmp_name']
+            ]);
             $destinationPath = 'uploads';
             $savePath = $destinationPath."/".$fileName;
             $file->move($destinationPath,$fileName);
